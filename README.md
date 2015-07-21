@@ -17,15 +17,15 @@
 ###<チケットについて>###
 -------------------------
 ### ・チケット内容 ###
-　　チケット１　　：ChatServerクラスの作成（サーバをたてる、クライアントの接続を受け取る）  
-　　チケット２　　：クライアントにデータを送り返す処理の追加。  
-　　チケット３　　：ChatClientHandlerクラスの作成（クライアントの情報）  
-　　チケット４　　：クライアントの情報を保存する処理の追加。（ChatServer）  
-　　チケット５　　：ChatClientServerクラスに「HELPコマンド」の処理を追加。  
-　　チケット６　　：ChatClientServerクラスに「NAMEコマンド」の処理を追加。  
-　　チケット７　　：ChatClientServerクラスに「WHOAMIコマンド」の処理を追加。  
-　　チケット８　　：ChatClientServerクラスに「POSTコマンド」の処理を追加。  
-　　チケット９　　：ChatClientServerクラスに「BYEコマンド」の処理を追加。  
+チケット１　　：ChatServerクラスの作成（サーバをたてる、クライアントの接続を受け取る）  
+チケット２　　：クライアントにデータを送り返す処理の追加。  
+チケット３　　：ChatClientHandlerクラスの作成（クライアントの情報）  
+チケット４　　：クライアントの情報を保存する処理の追加。（ChatServer）  
+チケット５　　：ChatClientServerクラスに「HELPコマンド」の処理を追加。  
+チケット６　　：ChatClientServerクラスに「NAMEコマンド」の処理を追加。  
+チケット７　　：ChatClientServerクラスに「WHOAMIコマンド」の処理を追加。  
+チケット８　　：ChatClientServerクラスに「POSTコマンド」の処理を追加。  
+チケット９　　：ChatClientServerクラスに「BYEコマンド」の処理を追加。  
 
 ### ・チケット役割分担表 ###
 
