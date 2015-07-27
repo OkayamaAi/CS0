@@ -6,18 +6,20 @@
  */
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class ChatClientHandler extends Thread{//Threadクラス←既存
     /**　フィールド　　*/
     private Socket socket;//クライアントを表すソケット
     private String name;//クライアントの名前
+    private List clients;//接続クライアント一覧
 
     /**　コンストラクタ　　*/
-    ChatClientHandler (Socket sock){
+    ChatClientHandler(Socket sock,List clients){
         this.socket = sock;
+        this.clients = clients;
         setInitialName();
-        }
-
+    }
     
     /**  メソッド　　*/
     /* ゲッター （ユーザ名・ユーザ(object)）*/
@@ -30,7 +32,15 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
     public void setClientName(String name){ this.name = name; }
     public void setInitialName(){//名前をつける
 	String name = "undefined";
-
+        int num = 1;
+        
+        for(int i = 0;i < clients.size(); i++){
+            ChatClientHandler handler = (ChatClientHandler)clients.get(i);
+            if(handler.getClientName().equals(name + num)){//同じ名前の人がいたら
+                num ++;
+            }   
+        }
+        this.name = name + num ;
     }
     
     /*  並列実行を行うときに実行されるメソッド */
