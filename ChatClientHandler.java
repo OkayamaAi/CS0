@@ -11,6 +11,8 @@ import java.util.*;
 public class ChatClientHandler extends Thread{//Threadクラス←既存
     /**　フィールド　　*/
     private Socket socket;//クライアントを表すソケット
+    private BufferedReader in;//
+    private BufferedWriter out;//
     private String name;//クライアントの名前
     private List clients;//接続クライアント一覧
 
@@ -45,7 +47,55 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
     
     /*  並列実行を行うときに実行されるメソッド */
     public void run(){
+        try{
+            open();
+            
+            while(true){
+                String message = receive();//受け取ったメッセージをmassageに格納
+                System.out.println(getClientName() + ": "+ message);
+                send(getClientName() + ": "+ message);
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+            
+        }finally{
+            close();
+        }
     }
     
+    /*+++++++++++++サーバの基本機能を実行するためのメソッド++++++++++++++*/
+    /* クライアントとのデータのやり取りを行うストリームを開くメソッド */
+    public void open() throws IOException {
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+    }
+    
+    /* クライアントからデータを受け取るメソッド */
+    String receive() throws IOException{
+        String message = in.readLine();
+        //System.out.println(message);
+        return message;
+    }
+    /* クライアントにデータを送信するメソッド */
+    void send(String message) throws IOException{
+        out.write(message);//messageの中身をバッファに書き込む
+        out.write("\r\n");//（ネットワークの改行）
+        out.flush();//バッファの文字をクライアント側に画面出力
+    }
+    /* クライアントとの接続を閉じるメソッド */
+    void close(){
+        ChatClientHandler removeHandler = this;
+        ChatClientHandler handler = null;
+      
+        clients.remove(removeHandler);//クライアントをリストから消去
+        if(in != null){try{ in.close(); } catch(IOException e ){}}
+        if(out != null){try{ out.close(); } catch(IOException e ){}}
+        if(socket != null){try{ socket.close(); } catch(IOException e ){}}
+        //closeメソッドが例外を投げるかもしれないので例外処理	
+        
+        
+        
+    }
+
 }
     
