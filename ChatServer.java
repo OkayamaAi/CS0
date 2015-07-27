@@ -25,7 +25,14 @@ public class ChatServer{
                 clients.add(handler);//クライアントのListに追加
                 System.out.println(handler.getClientName() + " connected.");
                 
-                handler.start();//
+                for(int i = 0;i < clients.size();i++){//自分以外のユーザに接続を知らせる
+                    ChatClientHandler otherHandler = (ChatClientHandler)clients.get(i);
+                    if(otherHandler != handler){//自分以外なら
+                        otherHandler.send(handler.getClientName() + " connected.");
+                    }
+                }
+
+                handler.start();//handler.receive(),send()の代わりに呼び出す
             }
             
             
