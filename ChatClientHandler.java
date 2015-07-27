@@ -73,10 +73,16 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
                         System.out.print("name: ");
                         name(commands[1]);
                     }
+                    else if(commands[0].equals("whoami")){//『WHOAMI』
+                        System.out.print("whoami: ");
+                        whoami();
+                    }
+
                     else{
                         System.out.println("コマンドが存在しません。");
                         this.send("コマンドが存在しません。(helpでコマンド一覧)");
                     }
+    
                 }catch(ArrayIndexOutOfBoundsException e){//引数の数が間違っているとき
                     System.out.println("コマンドの使い方が間違っています。");
                     this.send("コマンドの使い方が間違っています。(helpでコマンド一覧)");
@@ -151,6 +157,13 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
         System.out.println("name:" + name);//サーバに残す
     }
     
+    /* クライアントに名前を送信するメソッド   『WHOAMI』*/
+    public void whoami() throws IOException{
+    
+            System.out.println(getClientName());
+            this.send(getClientName());
+     
+    }
 
 
     
