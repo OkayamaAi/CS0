@@ -60,10 +60,11 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
                 
                 //コマンド処理
                 try{
+                    /*+++++++システムとユーザに関するコマンド+++++++++++++*/
                     if(commands[0].equals("help")){//『HELP』
                         //コマンドが指定されたらその説明を、指定されなかったら一覧を表示
-                        try{ commandHelp(commands[1]);
-                            System.out.print("help :");
+                        try{
+                            commandHelp(commands[1]);
                         }catch(ArrayIndexOutOfBoundsException e){
                             help();
                             System.out.println("help :");
@@ -77,6 +78,12 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
                         System.out.print("whoami: ");
                         whoami();
                     }
+                    else if(commands[0].equals("bye")){//『BYE』
+                        System.out.print("bye: ");
+                        removeClient();
+                        close();
+                    }
+                     /*+++++++投稿に関するコマンド+++++++++++++++++++++++*/
                     else if(commands[0].equalsIgnoreCase("post")){//『POST』
                         System.out.print("post: ");
                         post(commands[1]);
@@ -95,7 +102,7 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
             e.printStackTrace();
             
         }finally{
-            close();
+            try{ removeClient();  close(); }catch(IOException e){}
         }
     }
     /*++++++++++システムとユーザに関するコマンドで利用したメソッド++++++++++++++++++*/
@@ -108,7 +115,7 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
     public void commandHelp(String command)throws IOException{
         
         command = command.toUpperCase();//commandを大文字に変更してから検索
-        System.out.println(command + ": ");
+        System.out.println("help :" + command + ": ");
         String detail =  (String)commandList.get(command);//コマンドの説明を探す
         if(detail != null)//コマンドが存在したら
             this.send("…" + detail);//説明をクライアントに送信
@@ -150,13 +157,7 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
             }
         }
         setClientName(name);//名前を設定する
-        
-        for(int i = 0;i < clients.size();i ++ ){
-            ChatClientHandler handler = (ChatClientHandler)clients.get(i);
-            if(handler != this){//自分以外のユーザで
-                handler.send("name:" + preName + "->" + name);//他のユーザにも名前の変更を知らせる
-            }
-        }
+        post("name:" + preName + "->" + name);//他のユーザにも名前の変更を知らせる
         System.out.println("name:" + name);//サーバに残す
     }
     
@@ -166,6 +167,18 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
             System.out.println(getClientName());
             this.send(getClientName());
      
+    }
+
+    /* クライアントの情報を消去するメソッド    『BYE』*/
+    void removeClient() throws IOException{
+        ChatClientHandler removeHandler = this;
+        ChatClientHandler handler = null;
+        
+        clients.remove(removeHandler);//クライアントをリストから消去
+        
+        post(removeHandler.getClientName() + " disconnected.");
+        
+        System.out.println(removeHandler.getClientName() + " disconnected.");//サーバ
     }
 
     /*++++++++++++++投稿に関するコマンド+++++++++++++++++++++++++++++++++++++++++*/
@@ -223,10 +236,7 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
     }
     /* クライアントとの接続を閉じるメソッド */
     void close(){
-        ChatClientHandler removeHandler = this;
-        ChatClientHandler handler = null;
-      
-        clients.remove(removeHandler);//クライアントをリストから消去
+        
         if(in != null){try{ in.close(); } catch(IOException e ){}}
         if(out != null){try{ out.close(); } catch(IOException e ){}}
         if(socket != null){try{ socket.close(); } catch(IOException e ){}}
