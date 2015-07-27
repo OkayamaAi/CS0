@@ -77,7 +77,10 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
                         System.out.print("whoami: ");
                         whoami();
                     }
-
+                    else if(commands[0].equalsIgnoreCase("post")){//『POST』
+                        System.out.print("post: ");
+                        post(commands[1]);
+                    }
                     else{
                         System.out.println("コマンドが存在しません。");
                         this.send("コマンドが存在しません。(helpでコマンド一覧)");
@@ -165,6 +168,38 @@ public class ChatClientHandler extends Thread{//Threadクラス←既存
      
     }
 
+    /*++++++++++++++投稿に関するコマンド+++++++++++++++++++++++++++++++++++++++++*/
+    /* 接続している全員にmessageを送信するメソッド  『POST』*/
+    public void post(String message) throws IOException{
+        int flag1 = 1;//フラグ(送信者表示時に利用)
+     
+        System.out.println(message);
+        List names = new ArrayList();//送信者リストを作る
+        
+        //チャットに参加しているユーザ全員にメッセージを送信する
+        
+        for(int i = 0;i < clients.size();i ++ ){
+            ChatClientHandler handler = (ChatClientHandler)clients.get(i);
+            if(handler != this){//自分以外のユーザで
+                    names.add(handler.getClientName());//送信者リストに名前追加
+                    handler.send("[" + this.getClientName() + "]" + message);//メッセージを送信
+            }
+            
+        }
+        
+        Collections.sort(names);//送信者リストをソート
+        
+        String returnMessage = "";//初期化
+        
+        for(int i = 0;i < names.size();i ++ ){//
+            if(flag1 == 0)//２人目以降、前に「,」つける
+                returnMessage = returnMessage +  ",";
+            returnMessage = returnMessage + names.get(i);//送信者リストに名前を追加
+            flag1 = 0;//２人目以降フラグをおろす
+        }
+        this.send("<< To. " + returnMessage + ">>");	
+    }
+    
 
     
     /*+++++++++++++サーバの基本機能を実行するためのメソッド++++++++++++++*/
